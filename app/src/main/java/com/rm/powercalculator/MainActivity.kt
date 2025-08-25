@@ -7,10 +7,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.rm.powercalculator.presentation.OneRepMaxScreen
+import com.rm.powercalculator.presentation.OneRepMaxViewModel
 import com.rm.powercalculator.ui.theme._1RMPowerCalcTheme
 
 class MainActivity : ComponentActivity() {
@@ -20,8 +23,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             _1RMPowerCalcTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
+                    OneRepMaxScreenContainer(
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -31,17 +33,14 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
+fun OneRepMaxScreenContainer(
+    modifier: Modifier = Modifier,
+    viewModel: OneRepMaxViewModel = viewModel()
+) {
+    val state by viewModel.state.collectAsState()
+    OneRepMaxScreen(
+        state = state,
+        onEvent = viewModel::onEvent,
         modifier = modifier
     )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    _1RMPowerCalcTheme {
-        Greeting("Android")
-    }
 }
