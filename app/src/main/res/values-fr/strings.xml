@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Calculateur 1RM</string>
+    
+    <!-- Main Calculator Screen -->
+    <string name="title_main">Calculateur 1RM</string>
+    <string name="subtitle_calculator">Calculez votre maximum d\'une répétition</string>
+    <string name="label_weight">Poids (kg)</string>
+    <string name="label_reps">Répétitions</string>
+    <string name="button_calculate">CALCULER</string>
+    <string name="label_estimated_1rm">Votre 1RM Estimé</string>
+    <string name="unit_kg">kg</string>
+    <string name="content_description_view_history">Voir l\'Historique</string>
+    
+    <!-- History Screen -->
+    <string name="title_history">Historique des Calculs</string>
+    <string name="content_description_back">Retour</string>
+    <string name="empty_state_title">Aucun calcul pour l\'instant</string>
+    <string name="empty_state_subtitle">Votre historique de calculs apparaîtra ici</string>
+    <string name="label_weight_short">Poids</string>
+    <string name="label_reps_short">Rép</string>
+    <string name="label_1rm_short">1RM</string>
+    <string name="content_description_delete">Supprimer</string>
+    
+    <!-- Snackbar -->
+    <string name="snackbar_undo">ANNULER</string>
+    <string name="snackbar_record_deleted">Enregistrement supprimé</string>
+    <string name="snackbar_dismiss">Ignorer</string>
+</resources>

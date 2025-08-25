@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">1RM Kraft Rechner</string>
+    
+    <!-- Main Calculator Screen -->
+    <string name="title_main">1RM Kraft Rechner</string>
+    <string name="subtitle_calculator">Berechne dein Ein-Wiederholungs-Maximum</string>
+    <string name="label_weight">Gewicht (kg)</string>
+    <string name="label_reps">Wiederholungen</string>
+    <string name="button_calculate">BERECHNEN</string>
+    <string name="label_estimated_1rm">Dein geschätztes 1RM</string>
+    <string name="unit_kg">kg</string>
+    <string name="content_description_view_history">Verlauf anzeigen</string>
+    
+    <!-- History Screen -->
+    <string name="title_history">Berechnungsverlauf</string>
+    <string name="content_description_back">Zurück</string>
+    <string name="empty_state_title">Noch keine Berechnungen</string>
+    <string name="empty_state_subtitle">Dein Berechnungsverlauf wird hier angezeigt</string>
+    <string name="label_weight_short">Gewicht</string>
+    <string name="label_reps_short">Wdh</string>
+    <string name="label_1rm_short">1RM</string>
+    <string name="content_description_delete">Löschen</string>
+    
+    <!-- Snackbar -->
+    <string name="snackbar_undo">RÜCKGÄNGIG</string>
+    <string name="snackbar_record_deleted">Datensatz gelöscht</string>
+    <string name="snackbar_dismiss">Verwerfen</string>
+</resources>
