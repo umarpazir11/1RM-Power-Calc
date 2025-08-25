@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -29,6 +30,7 @@ fun OneRepMaxScreen(
     onHistoryClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
     val darkBackground = Color(0xFF121212)
     val cardBackground = Color(0xFF1E1E1E)
     val accentColor = Color(0xFFFF9800) // Vibrant Orange
@@ -155,7 +157,10 @@ fun OneRepMaxScreen(
                     
                     // Calculate Button
                     Button(
-                        onClick = { onEvent(OneRepMaxEvent.OnCalculateClick) },
+                        onClick = {
+                            keyboardController?.hide()
+                            onEvent(OneRepMaxEvent.OnCalculateClick)
+                                  },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(60.dp),

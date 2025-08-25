@@ -25,6 +25,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 import androidx.compose.ui.res.stringResource
 import com.rm.powercalculator.R
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -39,14 +43,27 @@ fun HistoryScreen(
     onUndoDelete: (HistoryRecordEntity) -> Unit,
     showUndoSnackbar: HistoryRecordEntity?,
     onHideUndoSnackbar: () -> Unit,
+    viewModel: OneRepMaxViewModel,
     modifier: Modifier = Modifier
 ) {
     val darkBackground = Color(0xFF121212)
     val cardBackground = Color(0xFF1E1E1E)
     val accentColor = Color(0xFFFF9800)
     
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    
+    LaunchedEffect(key1 = true) {
+        viewModel.uiEvent.collect { message ->
+            scope.launch {
+                snackbarHostState.showSnackbar(message = message)
+            }
+        }
+    }
+    
     Scaffold(
         modifier = modifier.background(darkBackground),
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = {
@@ -115,7 +132,10 @@ fun HistoryScreen(
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(historyRecords) { record ->
+                items(
+                    items = historyRecords,
+                    key = { record -> record.id }
+                ) { record ->
                     val dismissState = rememberSwipeToDismissBoxState(
                         confirmValueChange = { value ->
                             if (value == SwipeToDismissBoxValue.EndToStart) {

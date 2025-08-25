@@ -10,6 +10,8 @@ import com.rm.powercalculator.domain.GetHistoryUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
 class OneRepMaxViewModel(
@@ -27,6 +29,9 @@ class OneRepMaxViewModel(
     
     private val _showUndoSnackbar = MutableStateFlow<HistoryRecordEntity?>(null)
     val showUndoSnackbar: StateFlow<HistoryRecordEntity?> = _showUndoSnackbar.asStateFlow()
+    
+    private val _uiEvent = MutableSharedFlow<String>()
+    val uiEvent = _uiEvent.asSharedFlow()
     
     init {
         loadHistory()
@@ -81,6 +86,8 @@ class OneRepMaxViewModel(
             is OneRepMaxEvent.OnDeleteHistoryRecord -> {
                 viewModelScope.launch {
                     deleteHistoryRecordUseCase(event.record)
+                    // Emit UI event for snackbar
+                    _uiEvent.emit("Calculation deleted")
                     // Show undo snackbar
                     _showUndoSnackbar.value = event.record
                 }

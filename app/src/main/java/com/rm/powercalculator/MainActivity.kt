@@ -131,6 +131,7 @@ fun HistoryScreenContainer(
         onHideUndoSnackbar = {
             viewModel.hideUndoSnackbar()
         },
+        viewModel = viewModel,
         modifier = modifier
     )
 }
