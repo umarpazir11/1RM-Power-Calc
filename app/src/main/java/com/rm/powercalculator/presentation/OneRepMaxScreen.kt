@@ -6,35 +6,43 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.viewinterop.AndroidView
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import com.rm.powercalculator.R
+import com.rm.powercalculator.presentation.screens.OneRepMaxEvent
+import com.rm.powercalculator.presentation.screens.OneRepMaxScreenState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OneRepMaxScreen(
-    state: OneRepMaxState,
+    state: OneRepMaxScreenState,
     onEvent: (OneRepMaxEvent) -> Unit,
     onHistoryClick: () -> Unit,
+    onAboutClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val darkBackground = Color(0xFF121212)
     val cardBackground = Color(0xFF1E1E1E)
     val accentColor = Color(0xFFFF9800) // Vibrant Orange
-    
+
     Scaffold(
         modifier = modifier.background(darkBackground),
         topBar = {
@@ -54,6 +62,13 @@ fun OneRepMaxScreen(
                             tint = Color.White
                         )
                     }
+                    IconButton(onClick = onAboutClick) {
+                        Icon(
+                            imageVector = Icons.Default.Info,
+                            contentDescription = "About",
+                            tint = Color.White
+                        )
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = cardBackground
@@ -70,8 +85,7 @@ fun OneRepMaxScreen(
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             Spacer(modifier = Modifier.height(16.dp))
-            
-            // Subtitle
+
             Text(
                 text = stringResource(id = R.string.subtitle_calculator),
                 style = MaterialTheme.typography.bodyLarge.copy(
@@ -80,10 +94,9 @@ fun OneRepMaxScreen(
                 ),
                 textAlign = TextAlign.Center
             )
-            
+
             Spacer(modifier = Modifier.height(16.dp))
-            
-            // Main Calculator Card
+
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -103,7 +116,28 @@ fun OneRepMaxScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
-                    // Weight Input
+                    OutlinedTextField(
+                        value = state.exerciseName,
+                        onValueChange = { onEvent(OneRepMaxEvent.OnExerciseNameChange(it)) },
+                        label = { 
+                            Text(
+                                "Exercise Name",
+                                color = Color.White.copy(alpha = 0.7f)
+                            )
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = accentColor,
+                            unfocusedBorderColor = Color.Gray.copy(alpha = 0.5f),
+                            focusedLabelColor = accentColor,
+                            unfocusedLabelColor = Color.Gray.copy(alpha = 0.7f),
+                            cursorColor = accentColor,
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(12.dp)
+                    )
+
                     OutlinedTextField(
                         value = state.weightInput,
                         onValueChange = { onEvent(OneRepMaxEvent.OnWeightChange(it)) },
@@ -128,8 +162,7 @@ fun OneRepMaxScreen(
                         ),
                         shape = RoundedCornerShape(12.dp)
                     )
-                    
-                    // Reps Input
+
                     OutlinedTextField(
                         value = state.repsInput,
                         onValueChange = { onEvent(OneRepMaxEvent.OnRepsChange(it)) },
@@ -154,13 +187,12 @@ fun OneRepMaxScreen(
                         ),
                         shape = RoundedCornerShape(12.dp)
                     )
-                    
-                    // Calculate Button
+
                     Button(
                         onClick = {
                             keyboardController?.hide()
                             onEvent(OneRepMaxEvent.OnCalculateClick)
-                                  },
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(60.dp),
@@ -179,10 +211,9 @@ fun OneRepMaxScreen(
                     }
                 }
             }
-            
-            // Result Display
+
             AnimatedVisibility(
-                visible = state.estimatedMax > 0.0,
+                visible = state.oneRepMax != null && state.oneRepMax > 0.0,
                 enter = fadeIn(
                     animationSpec = tween(800)
                 ) + slideInVertically(
@@ -222,15 +253,15 @@ fun OneRepMaxScreen(
                             ),
                             textAlign = TextAlign.Center
                         )
-                        
+
                         Spacer(modifier = Modifier.height(16.dp))
-                        
+
                         Row(
                             verticalAlignment = Alignment.Bottom,
                             horizontalArrangement = Arrangement.Center
                         ) {
                             AnimatedContent(
-                                targetState = state.estimatedMax,
+                                targetState = state.oneRepMax ?: 0.0,
                                 transitionSpec = {
                                     ContentTransform(
                                         targetContentEnter = slideInVertically(
@@ -257,9 +288,9 @@ fun OneRepMaxScreen(
                                     )
                                 )
                             }
-                            
+
                             Spacer(modifier = Modifier.width(8.dp))
-                            
+
                             Text(
                                 text = stringResource(id = R.string.unit_kg),
                                 style = MaterialTheme.typography.titleLarge.copy(
@@ -271,8 +302,29 @@ fun OneRepMaxScreen(
                     }
                 }
             }
-            
+
             Spacer(modifier = Modifier.weight(1f))
+
+            AdMobBanner(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+            )
         }
     }
+}
+
+@Composable
+fun AdMobBanner(modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    AndroidView(
+        modifier = modifier,
+        factory = {
+            AdView(context).apply {
+                setAdSize(AdSize.BANNER)
+                adUnitId = "ca-app-pub-3940256099942544/6300978111" // Test Ad Unit ID
+                loadAd(AdRequest.Builder().build())
+            }
+        }
+    )
 }

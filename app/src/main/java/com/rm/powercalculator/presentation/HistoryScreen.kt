@@ -20,7 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.rm.powercalculator.data.HistoryRecordEntity
+import com.rm.powercalculator.domain.model.Calculation
 import java.text.SimpleDateFormat
 import java.util.*
 import androidx.compose.ui.res.stringResource
@@ -33,15 +33,16 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.core.tween
+import com.rm.powercalculator.presentation.viewmodel.OneRepMaxViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryScreen(
-    historyRecords: List<HistoryRecordEntity>,
+    historyRecords: List<Calculation>,
     onNavigateBack: () -> Unit,
-    onDeleteRecord: (HistoryRecordEntity) -> Unit,
-    onUndoDelete: (HistoryRecordEntity) -> Unit,
-    showUndoSnackbar: HistoryRecordEntity?,
+    onDeleteRecord: (Calculation) -> Unit,
+    onUndoDelete: (Calculation) -> Unit,
+    showUndoSnackbar: Calculation?,
     onHideUndoSnackbar: () -> Unit,
     viewModel: OneRepMaxViewModel,
     modifier: Modifier = Modifier
@@ -51,15 +52,6 @@ fun HistoryScreen(
     val accentColor = Color(0xFFFF9800)
     
     val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
-    
-    LaunchedEffect(key1 = true) {
-        viewModel.uiEvent.collect { message ->
-            scope.launch {
-                snackbarHostState.showSnackbar(message = message)
-            }
-        }
-    }
     
     Scaffold(
         modifier = modifier.background(darkBackground),
@@ -139,9 +131,7 @@ fun HistoryScreen(
                     val dismissState = rememberSwipeToDismissBoxState(
                         confirmValueChange = { value ->
                             if (value == SwipeToDismissBoxValue.EndToStart) {
-                                // Trigger the delete event but let the animation complete
                                 onDeleteRecord(record)
-                                // Return true to allow the item to animate off-screen
                                 true
                             } else {
                                 false
@@ -244,7 +234,7 @@ private fun SwipeBackground(
 
 @Composable
 private fun HistoryRecordCard(
-    record: HistoryRecordEntity,
+    record: Calculation,
     accentColor: Color,
     cardBackground: Color
 ) {
@@ -267,7 +257,13 @@ private fun HistoryRecordCard(
                 .padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // Header with date
+            Text(
+                text = record.exerciseName,
+                style = MaterialTheme.typography.titleLarge.copy(
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                )
+            )
             Text(
                 text = formattedDate,
                 style = MaterialTheme.typography.bodySmall.copy(
@@ -276,13 +272,11 @@ private fun HistoryRecordCard(
                 )
             )
             
-            // Values row
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Weight
                 Column(
                     horizontalAlignment = Alignment.Start
                 ) {
@@ -301,7 +295,6 @@ private fun HistoryRecordCard(
                     )
                 }
                 
-                // Reps
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -320,7 +313,6 @@ private fun HistoryRecordCard(
                     )
                 }
                 
-                // 1RM
                 Column(
                     horizontalAlignment = Alignment.End
                 ) {
