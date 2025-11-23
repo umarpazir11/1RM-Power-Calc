@@ -13,10 +13,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.google.android.gms.ads.MobileAds
 import com.rm.powercalculator.presentation.HistoryScreen
 import com.rm.powercalculator.presentation.OneRepMaxScreen
 import com.rm.powercalculator.presentation.screens.AboutScreen
+import com.rm.powercalculator.presentation.screens.PrivacyPolicyScreen
 import com.rm.powercalculator.presentation.screens.OneRepMaxEvent
 import com.rm.powercalculator.presentation.viewmodel.OneRepMaxViewModel
 import com.rm.powercalculator.ui.theme._1RMPowerCalcTheme
@@ -26,7 +26,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        MobileAds.initialize(this) {}
         enableEdgeToEdge()
         setContent {
             _1RMPowerCalcTheme {
@@ -68,6 +67,16 @@ fun AppNavigation(
         }
         composable("about") {
             AboutScreen(
+                onNavigateToPrivacyPolicy = {
+                    navController.navigate("privacy_policy")
+                },
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+        composable("privacy_policy") {
+            PrivacyPolicyScreen(
                 onNavigateBack = {
                     navController.popBackStack()
                 }

@@ -32,7 +32,7 @@ android {
         minSdk = 24
         targetSdk = 35
         versionCode = 5
-        versionName = "1.0"
+        versionName = "1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -84,7 +84,6 @@ dependencies {
     // Navigation dependencies
     implementation(libs.androidx.navigation.compose)
     
-    implementation("com.google.android.gms:play-services-ads:23.0.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

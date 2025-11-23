@@ -1,8 +1,5 @@
 package com.rm.powercalculator.presentation.screens
 
-import android.content.Intent
-import android.net.Uri
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,7 +10,6 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -27,28 +23,31 @@ import com.rm.powercalculator.R
 @Composable
 fun AboutScreen(
     onNavigateBack: () -> Unit,
+    onNavigateToPrivacyPolicy: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    val darkBackground = Color(0xFF121212)
-    val cardBackground = Color(0xFF1E1E1E)
-    val accentColor = Color(0xFFFF9800)
+    val versionName = try {
+        val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+        packageInfo.versionName
+    } catch (e: Exception) {
+        "N/A"
+    }
 
     Scaffold(
-        modifier = modifier.background(darkBackground),
+        modifier = modifier,
         topBar = {
             TopAppBar(
-                title = { Text("About", color = Color.White, fontWeight = FontWeight.Bold) },
+                title = { Text("About") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = stringResource(id = R.string.content_description_back),
-                            tint = Color.White
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = cardBackground)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
             )
         }
     ) { innerPadding ->
@@ -59,44 +58,86 @@ fun AboutScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(
-                text = "Formula Used",
-                style = MaterialTheme.typography.headlineSmall,
-                color = Color.White
-            )
-            Text(
-                text = "This app uses the Brzycki formula to estimate your one-rep max (1RM):",
-                style = MaterialTheme.typography.bodyLarge,
-                color = Color.White.copy(alpha = 0.8f)
-            )
-            Text(
-                text = "Weight / (1.0278 - 0.0278 * Reps)",
-                style = MaterialTheme.typography.bodyLarge,
-                color = accentColor,
-                fontWeight = FontWeight.Bold
-            )
+            // Formula Card
+            Card {
+                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        text = "Formulas Used",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "This app uses two common formulas to estimate your one-rep max (1RM):",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    
+                    // Brzycki Formula
+                    Text(
+                        text = "Brzycki",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+                    Text(
+                        text = "Weight / (1.0278 - 0.0278 * Reps)",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold
+                    )
 
-            val annotatedString = buildAnnotatedString {
-                withStyle(style = SpanStyle(color = Color.White, fontSize = MaterialTheme.typography.bodyLarge.fontSize)) {
-                    append("For more information, please see our ")
+                    // Epley Formula
+                    Text(
+                        text = "Epley",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+                    Text(
+                        text = "Weight * (1 + Reps / 30.0)",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
-                pushStringAnnotation(tag = "URL", annotation = "https://google.com")
-                withStyle(style = SpanStyle(color = accentColor, fontWeight = FontWeight.Bold, fontSize = MaterialTheme.typography.bodyLarge.fontSize)) {
-                    append("Privacy Policy")
-                }
-                pop()
             }
 
-            ClickableText(
-                text = annotatedString,
-                onClick = {
-                    annotatedString.getStringAnnotations(tag = "URL", start = it, end = it)
-                        .firstOrNull()?.let { annotation ->
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(annotation.item))
-                            context.startActivity(intent)
+            // Links Card
+            Card {
+                Column {
+                    // Privacy Policy ListItem
+                    val annotatedString = buildAnnotatedString {
+                        pushStringAnnotation(tag = "URL", annotation = "")
+                        withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.onSurface)) {
+                            append("Privacy Policy")
                         }
+                        pop()
+                    }
+                    ListItem(
+                        headlineContent = {
+                            ClickableText(
+                                text = annotatedString,
+                                style = MaterialTheme.typography.bodyLarge,
+                                onClick = { onNavigateToPrivacyPolicy() }
+                            )
+                        }
+                    )
+
+                    Divider()
+
+                    // App Version ListItem
+                    ListItem(
+                        headlineContent = { Text("App Version") },
+                        trailingContent = {
+                            if (versionName != null) {
+                                Text(
+                                    text = versionName,
+                                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold)
+                                )
+                            }
+                        }
+                    )
                 }
-            )
+            }
         }
     }
 }

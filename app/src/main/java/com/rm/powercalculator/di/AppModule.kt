@@ -7,6 +7,7 @@ import com.rm.powercalculator.data.local.CalculationDatabase
 import com.rm.powercalculator.data.repository.CalculationRepositoryImpl
 import com.rm.powercalculator.domain.repository.CalculationRepository
 import com.rm.powercalculator.domain.use_case.Calculate1RMUseCase
+import com.rm.powercalculator.domain.use_case.CalculatePercentagesUseCase
 import com.rm.powercalculator.domain.use_case.DeleteHistoryUseCase
 import com.rm.powercalculator.domain.use_case.GetHistoryUseCase
 import com.rm.powercalculator.domain.use_case.SaveHistoryUseCase
@@ -64,5 +65,11 @@ object AppModule {
     @Singleton
     fun provideDeleteHistoryUseCase(repository: CalculationRepository): DeleteHistoryUseCase {
         return DeleteHistoryUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCalculatePercentagesUseCase(): CalculatePercentagesUseCase {
+        return CalculatePercentagesUseCase()
     }
 }

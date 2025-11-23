@@ -4,6 +4,8 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
@@ -21,11 +23,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdView
 import com.rm.powercalculator.R
+import com.rm.powercalculator.domain.model.FormulaType
 import com.rm.powercalculator.presentation.screens.OneRepMaxEvent
 import com.rm.powercalculator.presentation.screens.OneRepMaxScreenState
 
@@ -79,6 +78,7 @@ fun OneRepMaxScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .padding(innerPadding)
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -116,6 +116,22 @@ fun OneRepMaxScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
+                    SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+                        FormulaType.values().forEachIndexed { index, formulaType ->
+                            SegmentedButton(
+                                selected = state.formulaType == formulaType,
+                                onClick = { onEvent(OneRepMaxEvent.OnFormulaChange(formulaType)) },
+                                shape = when (index) {
+                                    0 -> RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp)
+                                    FormulaType.values().lastIndex -> RoundedCornerShape(topEnd = 12.dp, bottomEnd = 12.dp)
+                                    else -> RoundedCornerShape(0.dp)
+                                }
+                            ) {
+                                Text(formulaType.name)
+                            }
+                        }
+                    }
+
                     OutlinedTextField(
                         value = state.exerciseName,
                         onValueChange = { onEvent(OneRepMaxEvent.OnExerciseNameChange(it)) },
@@ -211,7 +227,7 @@ fun OneRepMaxScreen(
                     }
                 }
             }
-
+            
             AnimatedVisibility(
                 visible = state.oneRepMax != null && state.oneRepMax > 0.0,
                 enter = fadeIn(
@@ -302,7 +318,39 @@ fun OneRepMaxScreen(
                     }
                 }
             }
-
+            
+            if (state.percentages.isNotEmpty()) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = cardBackground
+                    ),
+                    shape = RoundedCornerShape(20.dp),
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 8.dp
+                    )
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(
+                            text = "Percentages",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                            modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 8.dp)
+                        )
+                        state.percentages.forEach { p ->
+                            ListItem(
+                                headlineContent = { Text("${p.percentage}%", color = Color.White) },
+                                trailingContent = { Text("${String.format("%.1f", p.weight)} kg", color = accentColor, fontWeight = FontWeight.SemiBold) },
+                                colors = ListItemDefaults.colors(containerColor = Color.Transparent)
+                            )
+                        }
+                    }
+                }
+            }
+            
             Spacer(modifier = Modifier.weight(1f))
 
             AdMobBanner(
@@ -317,14 +365,4 @@ fun OneRepMaxScreen(
 @Composable
 fun AdMobBanner(modifier: Modifier = Modifier) {
     val context = LocalContext.current
-    AndroidView(
-        modifier = modifier,
-        factory = {
-            AdView(context).apply {
-                setAdSize(AdSize.BANNER)
-                adUnitId = "ca-app-pub-3940256099942544/6300978111" // Test Ad Unit ID
-                loadAd(AdRequest.Builder().build())
-            }
-        }
-    )
 }

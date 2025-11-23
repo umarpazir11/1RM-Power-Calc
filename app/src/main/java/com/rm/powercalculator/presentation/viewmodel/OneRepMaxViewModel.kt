@@ -3,7 +3,9 @@ package com.rm.powercalculator.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rm.powercalculator.domain.model.Calculation
+import com.rm.powercalculator.domain.model.FormulaType
 import com.rm.powercalculator.domain.use_case.Calculate1RMUseCase
+import com.rm.powercalculator.domain.use_case.CalculatePercentagesUseCase
 import com.rm.powercalculator.domain.use_case.DeleteHistoryUseCase
 import com.rm.powercalculator.domain.use_case.GetHistoryUseCase
 import com.rm.powercalculator.domain.use_case.SaveHistoryUseCase
@@ -23,7 +25,8 @@ class OneRepMaxViewModel @Inject constructor(
     private val calculate1RMUseCase: Calculate1RMUseCase,
     private val saveHistoryUseCase: SaveHistoryUseCase,
     private val getHistoryUseCase: GetHistoryUseCase,
-    private val deleteHistoryUseCase: DeleteHistoryUseCase
+    private val deleteHistoryUseCase: DeleteHistoryUseCase,
+    private val calculatePercentagesUseCase: CalculatePercentagesUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(OneRepMaxScreenState())
@@ -54,23 +57,25 @@ class OneRepMaxViewModel @Inject constructor(
                     deleteHistoryUseCase(event.calculation)
                 }
             }
+            is OneRepMaxEvent.OnFormulaChange -> {
+                _uiState.update { it.copy(formulaType = event.formulaType) }
+            }
         }
     }
 
     private fun calculateOneRepMax() {
-        val exerciseName = _uiState.value.exerciseName
-        val weight = _uiState.value.weightInput
-        val reps = _uiState.value.repsInput
-        val result = calculate1RMUseCase(weight, reps)
+        val state = _uiState.value
+        val result = calculate1RMUseCase(state.weightInput, state.repsInput, state.formulaType)
 
         result.onSuccess { oneRepMax ->
-            _uiState.update { it.copy(oneRepMax = oneRepMax) }
+            val percentages = calculatePercentagesUseCase(oneRepMax)
+            _uiState.update { it.copy(oneRepMax = oneRepMax, percentages = percentages) }
             viewModelScope.launch {
                 saveHistoryUseCase(
                     Calculation(
-                        exerciseName = exerciseName,
-                        weight = weight.toDouble(),
-                        reps = reps.toInt(),
+                        exerciseName = state.exerciseName,
+                        weight = state.weightInput.toDouble(),
+                        reps = state.repsInput.toInt(),
                         oneRepMax = oneRepMax,
                         timestamp = System.currentTimeMillis()
                     )
