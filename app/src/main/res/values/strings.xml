@@ -1,28 +1,23 @@
 <resources>
     <string name="app_name">1RM Power Calc</string>
-    
-    <!-- Main Calculator Screen -->
     <string name="title_main">1RM Power Calculator</string>
-    <string name="subtitle_calculator">Calculate your one-rep maximum</string>
+    <string name="title_history">History</string>
+    <string name="subtitle_calculator">Estimate your one-rep max</string>
     <string name="label_weight">Weight (kg)</string>
     <string name="label_reps">Reps</string>
-    <string name="button_calculate">CALCULATE</string>
-    <string name="label_estimated_1rm">Your Estimated 1RM</string>
+    <string name="button_calculate">Calculate</string>
+    <string name="label_estimated_1rm">Estimated 1RM</string>
     <string name="unit_kg">kg</string>
     <string name="content_description_view_history">View History</string>
-    
-    <!-- History Screen -->
-    <string name="title_history">Calculation History</string>
     <string name="content_description_back">Back</string>
-    <string name="empty_state_title">No calculations yet</string>
-    <string name="empty_state_subtitle">Your calculation history will appear here</string>
+    <string name="content_description_delete">Delete</string>
+    <string name="empty_state_title">No History Yet</string>
+    <string name="empty_state_subtitle">Your calculations will appear here.</string>
+    <string name="snackbar_record_deleted">Record deleted</string>
+    <string name="snackbar_undo">Undo</string>
+    <string name="snackbar_dismiss">Dismiss</string>
     <string name="label_weight_short">Weight</string>
     <string name="label_reps_short">Reps</string>
     <string name="label_1rm_short">1RM</string>
-    <string name="content_description_delete">Delete</string>
-    
-    <!-- Snackbar -->
-    <string name="snackbar_undo">UNDO</string>
-    <string name="snackbar_record_deleted">Record deleted</string>
-    <string name="snackbar_dismiss">Dismiss</string>
+    <string name="privacy_policy_text">"This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You. We use Your Personal data to provide and improve the Service. By using the Service, You agree to the collection and use of information in accordance with this Privacy Policy."</string>
 </resources>
