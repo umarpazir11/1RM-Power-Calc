@@ -18,8 +18,8 @@ import com.rm.powercalculator.presentation.OneRepMaxScreen
 import com.rm.powercalculator.presentation.screens.AboutScreen
 import com.rm.powercalculator.presentation.screens.PrivacyPolicyScreen
 import com.rm.powercalculator.presentation.screens.OneRepMaxEvent
+import com.rm.powercalculator.presentation.ui.theme.RMTheme
 import com.rm.powercalculator.presentation.viewmodel.OneRepMaxViewModel
-import com.rm.powercalculator.ui.theme._1RMPowerCalcTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -28,7 +28,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            _1RMPowerCalcTheme {
+            RMTheme {
                 AppNavigation(
                     modifier = Modifier.fillMaxSize()
                 )

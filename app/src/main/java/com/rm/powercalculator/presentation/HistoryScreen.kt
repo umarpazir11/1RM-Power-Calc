@@ -1,5 +1,6 @@
 package com.rm.powercalculator.presentation
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -35,7 +36,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.core.tween
 import com.rm.powercalculator.presentation.viewmodel.OneRepMaxViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun HistoryScreen(
     historyRecords: List<Calculation>,
@@ -47,21 +48,16 @@ fun HistoryScreen(
     viewModel: OneRepMaxViewModel,
     modifier: Modifier = Modifier
 ) {
-    val darkBackground = Color(0xFF121212)
-    val cardBackground = Color(0xFF1E1E1E)
-    val accentColor = Color(0xFFFF9800)
-    
     val snackbarHostState = remember { SnackbarHostState() }
     
     Scaffold(
-        modifier = modifier.background(darkBackground),
+        modifier = modifier,
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = {
                     Text(
                         text = stringResource(id = R.string.title_history),
-                        color = Color.White,
                         fontWeight = FontWeight.Bold
                     )
                 },
@@ -69,14 +65,10 @@ fun HistoryScreen(
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = stringResource(id = R.string.content_description_back),
-                            tint = Color.White
+                            contentDescription = stringResource(id = R.string.content_description_back)
                         )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = cardBackground
-                )
+                }
             )
         }
     ) { innerPadding ->
@@ -96,21 +88,16 @@ fun HistoryScreen(
                     Icon(
                         imageVector = Icons.Default.List,
                         contentDescription = null,
-                        tint = Color.Gray,
                         modifier = Modifier.size(64.dp)
                     )
                     Text(
                         text = stringResource(id = R.string.empty_state_title),
-                        style = MaterialTheme.typography.headlineSmall.copy(
-                            color = Color.Gray
-                        ),
+                        style = MaterialTheme.typography.headlineSmall,
                         textAlign = TextAlign.Center
                     )
                     Text(
                         text = stringResource(id = R.string.empty_state_subtitle),
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            color = Color.Gray.copy(alpha = 0.7f)
-                        ),
+                        style = MaterialTheme.typography.bodyMedium,
                         textAlign = TextAlign.Center
                     )
                 }
@@ -122,7 +109,7 @@ fun HistoryScreen(
                     .fillMaxSize()
                     .padding(innerPadding)
                     .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 items(
                     items = historyRecords,
@@ -141,16 +128,11 @@ fun HistoryScreen(
                     
                     SwipeToDismissBox(
                         state = dismissState,
+                        modifier = Modifier.animateItemPlacement(),
                         backgroundContent = {
                             SwipeBackground(dismissState = dismissState)
                         },
-                        content = {
-                            HistoryRecordCard(
-                                record = record,
-                                accentColor = accentColor,
-                                cardBackground = cardBackground
-                            )
-                        }
+                        content = { HistoryRecordCard(record = record) }
                     )
                 }
             }
@@ -172,7 +154,7 @@ fun HistoryScreen(
                     ) {
                         Text(
                             text = stringResource(id = R.string.snackbar_undo),
-                            color = accentColor
+                            color = MaterialTheme.colorScheme.primary
                         )
                     }
                 },
@@ -182,17 +164,11 @@ fun HistoryScreen(
                             onHideUndoSnackbar()
                         }
                     ) {
-                        Text(
-                            text = stringResource(id = R.string.snackbar_dismiss),
-                            color = Color.White
-                        )
+                        Text(text = stringResource(id = R.string.snackbar_dismiss))
                     }
                 }
             ) {
-                Text(
-                    text = stringResource(id = R.string.snackbar_record_deleted),
-                    color = Color.White
-                )
+                Text(text = stringResource(id = R.string.snackbar_record_deleted))
             }
         }
     }
@@ -207,7 +183,7 @@ private fun SwipeBackground(
             .fillMaxSize()
             .background(
                 color = Color.Red,
-                shape = RoundedCornerShape(16.dp)
+                shape = MaterialTheme.shapes.medium
             )
             .padding(horizontal = 20.dp),
         contentAlignment = when (dismissState.dismissDirection) {
@@ -218,8 +194,7 @@ private fun SwipeBackground(
     ) {
         Icon(
             imageVector = Icons.Default.Delete,
-                                    contentDescription = stringResource(id = R.string.content_description_delete),
-            tint = Color.White,
+            contentDescription = stringResource(id = R.string.content_description_delete),
             modifier = Modifier
                 .size(24.dp)
                 .scale(
@@ -233,43 +208,28 @@ private fun SwipeBackground(
 }
 
 @Composable
-private fun HistoryRecordCard(
-    record: Calculation,
-    accentColor: Color,
-    cardBackground: Color
-) {
+private fun HistoryRecordCard(record: Calculation) {
     val dateFormat = SimpleDateFormat("MMM dd, yyyy 'at' HH:mm", Locale.getDefault())
     val formattedDate = dateFormat.format(Date(record.timestamp))
     
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = cardBackground
-        ),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 4.dp
-        )
+        modifier = Modifier.fillMaxWidth()
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
                 text = record.exerciseName,
-                style = MaterialTheme.typography.titleLarge.copy(
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold
-                )
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
             )
             Text(
                 text = formattedDate,
-                style = MaterialTheme.typography.bodySmall.copy(
-                    color = Color.Gray,
-                    fontWeight = FontWeight.Medium
-                )
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
             )
             
             Row(
@@ -282,16 +242,12 @@ private fun HistoryRecordCard(
                 ) {
                     Text(
                         text = stringResource(id = R.string.label_weight_short),
-                        style = MaterialTheme.typography.bodySmall.copy(
-                            color = Color.Gray
-                        )
+                        style = MaterialTheme.typography.bodySmall
                     )
                     Text(
                         text = "${record.weight} kg",
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            color = Color.White,
-                            fontWeight = FontWeight.SemiBold
-                        )
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
                 
@@ -300,16 +256,12 @@ private fun HistoryRecordCard(
                 ) {
                     Text(
                         text = stringResource(id = R.string.label_reps_short),
-                        style = MaterialTheme.typography.bodySmall.copy(
-                            color = Color.Gray
-                        )
+                        style = MaterialTheme.typography.bodySmall
                     )
                     Text(
                         text = "${record.reps}",
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            color = Color.White,
-                            fontWeight = FontWeight.SemiBold
-                        )
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
                 
@@ -318,17 +270,14 @@ private fun HistoryRecordCard(
                 ) {
                     Text(
                         text = stringResource(id = R.string.label_1rm_short),
-                        style = MaterialTheme.typography.bodySmall.copy(
-                            color = Color.Gray
-                        )
+                        style = MaterialTheme.typography.bodySmall
                     )
                     
                     Text(
                         text = "${String.format("%.1f", record.oneRepMax)} kg",
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            color = accentColor,
-                            fontWeight = FontWeight.Bold
-                        )
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
             }

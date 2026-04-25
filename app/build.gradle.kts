@@ -31,7 +31,7 @@ android {
         applicationId = "com.rm.powercalculator"
         minSdk = 24
         targetSdk = 35
-        versionCode = 5
+        versionCode = 8
         versionName = "1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
