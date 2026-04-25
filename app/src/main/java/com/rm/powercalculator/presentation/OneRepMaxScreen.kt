@@ -2,7 +2,6 @@ package com.rm.powercalculator.presentation
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -14,8 +13,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -38,18 +35,14 @@ fun OneRepMaxScreen(
     modifier: Modifier = Modifier
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
-    val darkBackground = Color(0xFF121212)
-    val cardBackground = Color(0xFF1E1E1E)
-    val accentColor = Color(0xFFFF9800) // Vibrant Orange
 
     Scaffold(
-        modifier = modifier.background(darkBackground),
+        modifier = modifier,
         topBar = {
             TopAppBar(
                 title = {
                     Text(
                         text = stringResource(id = R.string.title_main),
-                        color = Color.White,
                         fontWeight = FontWeight.Bold
                     )
                 },
@@ -57,21 +50,16 @@ fun OneRepMaxScreen(
                     IconButton(onClick = onHistoryClick) {
                         Icon(
                             imageVector = Icons.Default.List,
-                            contentDescription = stringResource(id = R.string.content_description_view_history),
-                            tint = Color.White
+                            contentDescription = stringResource(id = R.string.content_description_view_history)
                         )
                     }
                     IconButton(onClick = onAboutClick) {
                         Icon(
                             imageVector = Icons.Default.Info,
-                            contentDescription = "About",
-                            tint = Color.White
+                            contentDescription = "About"
                         )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = cardBackground
-                )
+                }
             )
         }
     ) { innerPadding ->
@@ -88,10 +76,7 @@ fun OneRepMaxScreen(
 
             Text(
                 text = stringResource(id = R.string.subtitle_calculator),
-                style = MaterialTheme.typography.bodyLarge.copy(
-                    color = Color.Gray,
-                    textAlign = TextAlign.Center
-                ),
+                style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center
             )
 
@@ -101,13 +86,7 @@ fun OneRepMaxScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 8.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = cardBackground
-                ),
-                shape = RoundedCornerShape(20.dp),
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 8.dp
-                )
+                shape = RoundedCornerShape(24.dp)
             ) {
                 Column(
                     modifier = Modifier
@@ -135,73 +114,28 @@ fun OneRepMaxScreen(
                     OutlinedTextField(
                         value = state.exerciseName,
                         onValueChange = { onEvent(OneRepMaxEvent.OnExerciseNameChange(it)) },
-                        label = { 
-                            Text(
-                                "Exercise Name",
-                                color = Color.White.copy(alpha = 0.7f)
-                            )
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = accentColor,
-                            unfocusedBorderColor = Color.Gray.copy(alpha = 0.5f),
-                            focusedLabelColor = accentColor,
-                            unfocusedLabelColor = Color.Gray.copy(alpha = 0.7f),
-                            cursorColor = accentColor,
-                            focusedTextColor = Color.White,
-                            unfocusedTextColor = Color.White
-                        ),
-                        shape = RoundedCornerShape(12.dp)
+                        label = { Text("Exercise Name") },
+                        modifier = Modifier.fillMaxWidth()
                     )
 
                     OutlinedTextField(
                         value = state.weightInput,
                         onValueChange = { onEvent(OneRepMaxEvent.OnWeightChange(it)) },
-                        label = { 
-                            Text(
-                                stringResource(id = R.string.label_weight),
-                                color = Color.White.copy(alpha = 0.7f)
-                            )
-                        },
+                        label = { Text(stringResource(id = R.string.label_weight)) },
                         keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
                             keyboardType = KeyboardType.Number
                         ),
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = accentColor,
-                            unfocusedBorderColor = Color.Gray.copy(alpha = 0.5f),
-                            focusedLabelColor = accentColor,
-                            unfocusedLabelColor = Color.Gray.copy(alpha = 0.7f),
-                            cursorColor = accentColor,
-                            focusedTextColor = Color.White,
-                            unfocusedTextColor = Color.White
-                        ),
-                        shape = RoundedCornerShape(12.dp)
+                        modifier = Modifier.fillMaxWidth()
                     )
 
                     OutlinedTextField(
                         value = state.repsInput,
                         onValueChange = { onEvent(OneRepMaxEvent.OnRepsChange(it)) },
-                        label = { 
-                            Text(
-                                stringResource(id = R.string.label_reps),
-                                color = Color.White.copy(alpha = 0.7f)
-                            )
-                        },
+                        label = { Text(stringResource(id = R.string.label_reps)) },
                         keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
                             keyboardType = KeyboardType.Number
                         ),
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = accentColor,
-                            unfocusedBorderColor = Color.Gray.copy(alpha = 0.5f),
-                            focusedLabelColor = accentColor,
-                            unfocusedLabelColor = Color.Gray.copy(alpha = 0.7f),
-                            cursorColor = accentColor,
-                            focusedTextColor = Color.White,
-                            unfocusedTextColor = Color.White
-                        ),
-                        shape = RoundedCornerShape(12.dp)
+                        modifier = Modifier.fillMaxWidth()
                     )
 
                     Button(
@@ -211,18 +145,12 @@ fun OneRepMaxScreen(
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(60.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = accentColor
-                        ),
-                        shape = RoundedCornerShape(16.dp)
+                            .height(50.dp)
                     ) {
                         Text(
                             stringResource(id = R.string.button_calculate),
-                            style = MaterialTheme.typography.titleLarge.copy(
-                                fontWeight = FontWeight.Bold,
-                                color = Color.Black
-                            )
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold
                         )
                     }
                 }
@@ -247,13 +175,7 @@ fun OneRepMaxScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = cardBackground
-                    ),
-                    shape = RoundedCornerShape(20.dp),
-                    elevation = CardDefaults.cardElevation(
-                        defaultElevation = 8.dp
-                    )
+                    shape = RoundedCornerShape(20.dp)
                 ) {
                     Column(
                         modifier = Modifier
@@ -263,10 +185,7 @@ fun OneRepMaxScreen(
                     ) {
                         Text(
                             text = stringResource(id = R.string.label_estimated_1rm),
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                color = Color.Gray,
-                                textAlign = TextAlign.Center
-                            ),
+                            style = MaterialTheme.typography.titleMedium,
                             textAlign = TextAlign.Center
                         )
 
@@ -279,26 +198,15 @@ fun OneRepMaxScreen(
                             AnimatedContent(
                                 targetState = state.oneRepMax ?: 0.0,
                                 transitionSpec = {
-                                    ContentTransform(
-                                        targetContentEnter = slideInVertically(
-                                            animationSpec = tween(800),
-                                            initialOffsetY = { 100 }
-                                        ) + fadeIn(
-                                            animationSpec = tween(800)
-                                        ),
-                                        initialContentExit = slideOutVertically(
-                                            animationSpec = tween(300),
-                                            targetOffsetY = { -100 }
-                                        ) + fadeOut(
-                                            animationSpec = tween(300)
-                                        )
-                                    )
+                                    fadeIn(animationSpec = tween(800, delayMillis = 300)) +
+                                    scaleIn(animationSpec = tween(800, delayMillis = 300), initialScale = 0.8f) togetherWith
+                                    fadeOut(animationSpec = tween(300))
                                 }
                             ) { targetValue ->
                                 Text(
                                     text = "${String.format("%.1f", targetValue)}",
                                     style = MaterialTheme.typography.displayLarge.copy(
-                                        color = accentColor,
+                                        color = MaterialTheme.colorScheme.primary,
                                         fontWeight = FontWeight.ExtraBold,
                                         fontSize = 64.sp
                                     )
@@ -309,10 +217,7 @@ fun OneRepMaxScreen(
 
                             Text(
                                 text = stringResource(id = R.string.unit_kg),
-                                style = MaterialTheme.typography.titleLarge.copy(
-                                    color = Color.Gray,
-                                    fontWeight = FontWeight.Medium
-                                )
+                                style = MaterialTheme.typography.titleLarge
                             )
                         }
                     }
@@ -324,45 +229,24 @@ fun OneRepMaxScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = cardBackground
-                    ),
-                    shape = RoundedCornerShape(20.dp),
-                    elevation = CardDefaults.cardElevation(
-                        defaultElevation = 8.dp
-                    )
+                    shape = RoundedCornerShape(20.dp)
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
                             text = "Percentages",
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold,
-                            color = Color.White,
                             modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 8.dp)
                         )
                         state.percentages.forEach { p ->
                             ListItem(
-                                headlineContent = { Text("${p.percentage}%", color = Color.White) },
-                                trailingContent = { Text("${String.format("%.1f", p.weight)} kg", color = accentColor, fontWeight = FontWeight.SemiBold) },
-                                colors = ListItemDefaults.colors(containerColor = Color.Transparent)
+                                headlineContent = { Text("${p.percentage}%") },
+                                trailingContent = { Text("${String.format("%.1f", p.weight)} kg", fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.primary) }
                             )
                         }
                     }
                 }
             }
-            
-            Spacer(modifier = Modifier.weight(1f))
-
-            AdMobBanner(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-            )
         }
     }
-}
-
-@Composable
-fun AdMobBanner(modifier: Modifier = Modifier) {
-    val context = LocalContext.current
 }
